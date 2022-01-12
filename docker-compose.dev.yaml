@@ -1,0 +1,28 @@
+version: "3.0"
+services:
+  worker:
+    container_name: worker
+    depends_on:
+      - rabbitmq
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    restart: always
+    volumes:
+      - ./application:/var/www/html
+    networks:
+      service_mesh:
+        ipv4_address: 172.50.0.63
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      service_mesh:
+        ipv4_address: 172.50.0.64
+
+networks:
+  service_mesh:
+    external: true
